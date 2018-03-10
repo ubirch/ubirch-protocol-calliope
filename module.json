@@ -1,0 +1,13 @@
+{
+  "name": "ubirch-protocol-calliope",
+  "version": "1.0.0",
+  "description": "ubirch protocol implementation Calliope mini (mbed-classic)",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "microbit": "calliope-mini/microbit#v2.0.0-rc8-calliope-1.0.4",
+    "ubirch-protocol": "ubirch/ubirch-protocol#master"
+  },
+  "targetDependencies": {},
+  "lib": "./source"
+}
+
