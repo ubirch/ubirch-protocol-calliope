@@ -95,8 +95,8 @@ target_include_directories(ubirch-protocol PUBLIC yotta_modules/ubirch-protocol)
 target_link_libraries(ubirch-protocol libnacl msgpack)
 
 add_library(ubirch-protocol-calliope
-        source/ubirch-protocol-calliope.h
-        source/ubirch-protocol-calliope.cpp
+        source/CryptoUbirchProtocol.h
+        source/CryptoUbirchProtocol.cpp
         source/random.c
         )
 target_include_directories(ubirch-protocol-calliope PUBLIC source)
@@ -106,3 +106,6 @@ add_custom_target(compile
         COMMAND yt build
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         )
+
+add_executable(example source/main.cpp)
+target_link_libraries(example ubirch-protocol-calliope)
