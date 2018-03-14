@@ -44,7 +44,7 @@ void loadSignature() {
         uBit.serial.printf("found last signature...\r\n");
         uint8_t s[64];
         memcpy(s, s1->value, 32);
-        memcpy(s+32, s2->value, 32);
+        memcpy(s + 32, s2->value, 32);
         PacketBuffer signature(s, sizeof(s));
         ubirch.setLastSignature(signature);
     }
@@ -54,21 +54,24 @@ void loadSignature() {
 }
 
 int main() {
+    time_t ts;
+
     uBit.init();
     uBit.serial.printf("HELLO WORLD!\r\n");
     uBit.display.readLightLevel();
 
     loadSignature();
 
-    time_t ts;
-    time(&ts);
     // create 3 consecutive messages and chain them, pressing reset will continue the chain
     for (int i = 0; i < 3; i++) {
-        ubirch.startMessage();
-        ubirch.addMap("data", 1);
-        ubirch.addMap((int) time, 2);
-        ubirch.addInt("t", uBit.thermometer.getTemperature());
-        ubirch.addInt("l", uBit.display.readLightLevel());
+        time(&ts);
+        // structure: {"data": {1234: {"t":1234, "l":1234}}}
+        ubirch.startMessage()
+                .addMap(1)
+                .addMap("data", 1)
+                .addMap((int) time, 2)
+                .addInt("t", uBit.thermometer.getTemperature())
+                .addInt("l", uBit.display.readLightLevel());
         PacketBuffer packet = ubirch.finishMessage();
         uBit.serial.printf("message: %d\r\n", packet.length());
         hexprint(packet.getBytes(), static_cast<size_t>(packet.length()));

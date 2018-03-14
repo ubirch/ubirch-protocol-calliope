@@ -55,7 +55,7 @@ public:
      * Start a new chained packet using the ubirch-protocol.
      * Finish using #finishMessage
      */
-    void startMessage();
+    CryptoUbirchProtocol& startMessage();
 
     /**
      * Finish the message, add signature and return as a packet buffer.
@@ -74,60 +74,60 @@ public:
      * Add a single integer.
      * @param value the value
      */
-    void addInt(int value);
+    CryptoUbirchProtocol& addInt(int value);
 
     /**
      * Add a single string.
      * @param value the value
      */
-    void addString(ManagedString &value);
+    CryptoUbirchProtocol& addString(ManagedString &value);
 
     /**
      * Add a key-value map with n entries.
      * @param n the number of entries
      */
-    void addMap(int n);
+    CryptoUbirchProtocol& addMap(int n);
 
     /**
      * Add an array with n entries
      * @param n the number of array elements
      */
-    void addArray(int n);
+    CryptoUbirchProtocol& addArray(int n);
 
     /**
      * Add a string map entry with name key and the value.
      * @param key the name of the entry
      * @param value the value
      */
-    void addString(ManagedString key, ManagedString value);
+    CryptoUbirchProtocol& addString(ManagedString key, ManagedString value);
 
     /**
      * Add an integer map entry with name key and the value.
      * @param key the name of the entry
      * @param value the value
      */
-    void addInt(ManagedString key, int value);
+    CryptoUbirchProtocol& addInt(ManagedString key, int value);
 
     /**
      * Add a map inside of a map with the name and n entries.
      * @param key the name of the entry
      * @param n the number of entries
      */
-    void addMap(ManagedString key, int n);
+    CryptoUbirchProtocol& addMap(ManagedString key, int n);
 
     /**
      * Add a map inside of a map with with the integer key and n entries (for time series).
      * @param key the integer that is the key
      * @param n number of entries
      */
-    void addMap(int key, int n);
+    CryptoUbirchProtocol& addMap(int key, int n);
 
     /**
      * Add an array map entry with the key and n entries
      * @param key the name of the entry
      * @param n the number of array elements
      */
-    void addArray(ManagedString key, int n);
+    CryptoUbirchProtocol& addArray(ManagedString key, int n);
 
 
 protected:
