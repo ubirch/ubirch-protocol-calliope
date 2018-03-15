@@ -22,7 +22,7 @@ void CryptoUbirchProtocol::reset(const uint32_t deviceId) {
 
     // initialize ubirch protocol
     memset(&proto, 0, sizeof(proto));
-    ubirch_protocol_init(&proto, proto_chained, 0x55,
+    ubirch_protocol_init(&proto, proto_chained, 0x53,
                          &sbuf, msgpack_write_dal, ed25519_sign, hardwareSerial);
 }
 
