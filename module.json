@@ -8,6 +8,9 @@
     "ubirch-protocol": "ubirch/ubirch-protocol#master"
   },
   "targetDependencies": {},
+  "extraIncludes": [
+    "source"
+  ],
   "lib": "./source"
 }
 
