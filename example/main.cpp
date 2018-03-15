@@ -69,7 +69,7 @@ int main() {
         ubirch.startMessage()
                 .addMap(1)
                 .addMap("data", 1)
-                .addMap((int) time, 2)
+                .addMap((int) ts, 2)
                 .addInt("t", uBit.thermometer.getTemperature())
                 .addInt("l", uBit.display.readLightLevel());
         PacketBuffer packet = ubirch.finishMessage();
