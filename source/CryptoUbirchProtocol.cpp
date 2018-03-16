@@ -120,6 +120,11 @@ CryptoUbirchProtocol& CryptoUbirchProtocol::addArray(ManagedString key, int n) {
     return *this;
 }
 
+CryptoUbirchProtocol &CryptoUbirchProtocol::addMsgPack(char *buf, size_t len) {
+    msgpack_pack_raw_body(&pk, buf, len);
+    return *this;
+}
+
 int CryptoUbirchProtocol::msgpack_write_dal(void *data, const char *buf, size_t len) {
     msgpack_sbuffer *sbuf = (msgpack_sbuffer *) data;
 

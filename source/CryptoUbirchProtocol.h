@@ -129,6 +129,12 @@ public:
      */
     CryptoUbirchProtocol& addArray(ManagedString key, int n);
 
+    /**
+     * Add a raw msgpack blob.
+     * @param buf the data buffer to add
+     * @param len the length of the data
+     */
+    CryptoUbirchProtocol& addMsgPack(char *buf, size_t len);
 
 protected:
     /**
