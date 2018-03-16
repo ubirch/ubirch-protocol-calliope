@@ -141,9 +141,7 @@ protected:
      */
     static int msgpack_write_dal(void *data, const char *buf, size_t len);
 
-private:
     msgpack_sbuffer sbuf;   //!< local stream buffer
     ubirch_protocol proto;  //!< ubirch-protocol structure
     msgpack_packer pk;      //!< the packer used to assemble the message
-
 };
