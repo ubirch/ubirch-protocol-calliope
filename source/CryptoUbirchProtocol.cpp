@@ -13,7 +13,8 @@
 #include <ubirch/ubirch_ed25519.h>
 #include <ubirch/ubirch_protocol_kex.h>
 
-CryptoUbirchProtocol::CryptoUbirchProtocol(const uint32_t deviceId) : sbuf(), proto(), pk(), hardwareSerial() {
+CryptoUbirchProtocol::CryptoUbirchProtocol(const uint32_t deviceId)
+        : sbuf(), proto(), pk(), hardwareSerial() {
     reset(deviceId);
 }
 
@@ -51,7 +52,7 @@ PacketBuffer CryptoUbirchProtocol::createSignedMessage(ManagedString message) {
     return finishMessage();
 }
 
-CryptoUbirchProtocol& CryptoUbirchProtocol::startMessage() {
+CryptoUbirchProtocol &CryptoUbirchProtocol::startMessage() {
     msgpack_sbuffer_init(&sbuf);
     msgpack_packer_init(&pk, &proto, ubirch_protocol_write);
     ubirch_protocol_start(&proto, &pk);
@@ -68,53 +69,53 @@ PacketBuffer CryptoUbirchProtocol::finishMessage() {
     return buf;
 }
 
-CryptoUbirchProtocol& CryptoUbirchProtocol::addString(ManagedString &value) {
+CryptoUbirchProtocol &CryptoUbirchProtocol::addString(ManagedString &value) {
     msgpack_pack_raw(&pk, static_cast<size_t>(value.length()));
     msgpack_pack_raw_body(&pk, value.toCharArray(), static_cast<size_t>(value.length()));
     return *this;
 }
 
-CryptoUbirchProtocol& CryptoUbirchProtocol::addInt(const int value) {
+CryptoUbirchProtocol &CryptoUbirchProtocol::addInt(const int value) {
     msgpack_pack_int(&pk, value);
     return *this;
 }
 
-CryptoUbirchProtocol& CryptoUbirchProtocol::addMap(int n) {
+CryptoUbirchProtocol &CryptoUbirchProtocol::addMap(int n) {
     msgpack_pack_map(&pk, static_cast<size_t>(n));
     return *this;
 }
 
-CryptoUbirchProtocol& CryptoUbirchProtocol::addArray(int n) {
+CryptoUbirchProtocol &CryptoUbirchProtocol::addArray(int n) {
     msgpack_pack_array(&pk, static_cast<size_t>(n));
     return *this;
 }
 
-CryptoUbirchProtocol& CryptoUbirchProtocol::addInt(ManagedString key, int value) {
+CryptoUbirchProtocol &CryptoUbirchProtocol::addInt(ManagedString key, int value) {
     addString(key);
     msgpack_pack_int(&pk, value);
     return *this;
 }
 
-CryptoUbirchProtocol& CryptoUbirchProtocol::addString(ManagedString key, ManagedString value) {
+CryptoUbirchProtocol &CryptoUbirchProtocol::addString(ManagedString key, ManagedString value) {
     addString(key);
     msgpack_pack_raw(&pk, static_cast<size_t>(value.length()));
     msgpack_pack_raw_body(&pk, value.toCharArray(), static_cast<size_t>(value.length()));
     return *this;
 }
 
-CryptoUbirchProtocol& CryptoUbirchProtocol::addMap(ManagedString key, int n) {
+CryptoUbirchProtocol &CryptoUbirchProtocol::addMap(ManagedString key, int n) {
     addString(key);
     addMap(n);
     return *this;
 }
 
-CryptoUbirchProtocol& CryptoUbirchProtocol::addMap(int key, int n) {
+CryptoUbirchProtocol &CryptoUbirchProtocol::addMap(int key, int n) {
     addInt(key);
     addMap(n);
     return *this;
 }
 
-CryptoUbirchProtocol& CryptoUbirchProtocol::addArray(ManagedString key, int n) {
+CryptoUbirchProtocol &CryptoUbirchProtocol::addArray(ManagedString key, int n) {
     addString(key);
     addArray(n);
     return *this;
@@ -125,7 +126,8 @@ CryptoUbirchProtocol &CryptoUbirchProtocol::addMsgPack(char *buf, size_t len) {
     return *this;
 }
 
-PacketBuffer  CryptoUbirchProtocol::createKeyRegistration(unsigned char *key, unsigned int notBefore, unsigned int notAfter) {
+PacketBuffer
+CryptoUbirchProtocol::createKeyRegistration(unsigned char *key, unsigned int notBefore, unsigned int notAfter) {
     // initialize ubirch protocol
     memset(&proto, 0, sizeof(proto));
     ubirch_protocol_init(&proto, proto_signed, UBIRCH_PROTOCOL_TYPE_REG,

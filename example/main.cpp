@@ -6,12 +6,19 @@
 
 MicroBit uBit;
 CryptoUbirchProtocol ubirch;
+time_t startTime;
 
 /* ==== ECC KEYS ================= */
 unsigned char ed25519_public_key[crypto_sign_PUBLICKEYBYTES];
 unsigned char ed25519_secret_key[crypto_sign_SECRETKEYBYTES];
 
-void loadOrGenerateKey();
+void set_system_time(time_t t) {
+    startTime = t - system_timer_current_time() / 1000;
+}
+
+time_t get_system_time() {
+    return system_timer_current_time() / 1000 + startTime;
+}
 
 // a little helper function to print the resulting byte arrays
 void hexprint(const uint8_t *b, size_t size) {
@@ -51,7 +58,7 @@ void loadSignature() {
 void loadOrGenerateKey() {
     KeyValuePair *kv_pk = uBit.storage.get("pk");
     KeyValuePair *kv_sk = uBit.storage.get("sk");
-    if(kv_sk != NULL && kv_pk != NULL) {
+    if (kv_sk != NULL && kv_pk != NULL) {
         memcpy(ed25519_public_key, kv_pk->value, crypto_sign_PUBLICKEYBYTES);
         memcpy(ed25519_secret_key, kv_sk->value, crypto_sign_SECRETKEYBYTES);
     } else {
@@ -60,11 +67,10 @@ void loadOrGenerateKey() {
         uBit.storage.put("sk", ed25519_secret_key, crypto_sign_SECRETKEYBYTES);
     }
 
-    time_t t;
-    time(&t);
-
+    time_t t = get_system_time();
     PacketBuffer packet =
-            ubirch.createKeyRegistration(ed25519_public_key, static_cast<unsigned int>(t+1), static_cast<unsigned int>(t + 31536000));
+            ubirch.createKeyRegistration(ed25519_public_key, static_cast<unsigned int>(t + 1),
+                                         static_cast<unsigned int>(t + 31536000));
     uBit.serial.printf("key message: %d\r\n", packet.length());
     hexprint(packet.getBytes(), static_cast<size_t>(packet.length()));
 }
@@ -78,14 +84,15 @@ int main() {
     // we need to set the current time, simply enter what `date +%s` gives you
     uBit.serial.printf("TIME:\r\n");
     ManagedString input = uBit.serial.readUntil(ManagedString("\r\n"), SYNC_SPINWAIT);
-    time_t t = atoi(input.toCharArray());
-    set_time(t);
-    uBit.serial.printf(ctime(&t));
+    set_system_time(atoi(input.toCharArray()));
+    ts = get_system_time();
+    uBit.serial.printf(ctime(&ts));
 
     // try to load the key from flash storage, or create a new one and save it
     // ATTENTION: flashing new firmware will delete all keys
     loadOrGenerateKey();
 
+    ubirch.reset(microbit_serial_number());
     // load the last generated signature
     loadSignature();
 
@@ -94,11 +101,11 @@ int main() {
 
     // create 3 consecutive messages and chain them, pressing reset will continue the chain
     for (int i = 0; i < 3; i++) {
-        time(&ts);
+        ts = get_system_time();
+        uBit.serial.printf(ctime(&ts));
         // structure: {"data": {1234: {"t":1234, "l":1234}}}
         ubirch.startMessage()
                 .addMap(1)
-                .addMap("data", 1)
                 .addMap((int) ts, 2)
                 .addInt("t", temperature)
                 .addInt("l", lightlevel);
