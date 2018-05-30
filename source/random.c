@@ -55,7 +55,7 @@ char getRandomNumber() {
             NRF_RNG->EVENTS_VALRDY = 0;
 
             // Wait for a number ot be generated.
-            while (NRF_RNG->EVENTS_VALRDY == 0);
+            while (NRF_RNG->EVENTS_VALRDY == 0) {}
 
             random_value = (random_value << 8) | ((int) NRF_RNG->VALUE);
         }

@@ -11,6 +11,7 @@
 
 #include <ManagedString.h>
 #include <ubirch/ubirch_protocol.h>
+#include <armnacl.h>
 
 /**
  * The ubirch-protocol. This class has state and needs to be reset if a new chain of messages
@@ -136,6 +137,15 @@ public:
      */
     CryptoUbirchProtocol& addMsgPack(char *buf, size_t len);
 
+    /**
+     * Create a key registration package. This method immediately returns the complete packet.
+     * @param pk the public key to register
+     * @param notBefore a timestamp when this key becomes is valid
+     * @param notAfter a timestamp when this key becomes invalid
+     * @return a packet buffer with the msgpack encoded bytes
+     */
+    PacketBuffer createKeyRegistration(unsigned char pk[crypto_sign_PUBLICKEYBYTES], unsigned int notBefore, unsigned int notAfter);
+
 protected:
     /**
      * A special write function that writes into an sbuffer. Override if you
@@ -150,4 +160,5 @@ protected:
     msgpack_sbuffer sbuf;   //!< local stream buffer
     ubirch_protocol proto;  //!< ubirch-protocol structure
     msgpack_packer pk;      //!< the packer used to assemble the message
+    unsigned char hardwareSerial[UBIRCH_PROTOCOL_UUID_SIZE]; //!< the hardware serial
 };

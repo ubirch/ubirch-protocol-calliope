@@ -107,5 +107,5 @@ add_custom_target(compile
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         )
 
-add_executable(example source/main.cpp)
+add_executable(example example/main.cpp)
 target_link_libraries(example ubirch-protocol-calliope)

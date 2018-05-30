@@ -11,13 +11,13 @@
 
 #include "CryptoUbirchProtocol.h"
 #include <ubirch/ubirch_ed25519.h>
+#include <ubirch/ubirch_protocol_kex.h>
 
-CryptoUbirchProtocol::CryptoUbirchProtocol(const uint32_t deviceId) : sbuf(), proto(), pk() {
+CryptoUbirchProtocol::CryptoUbirchProtocol(const uint32_t deviceId) : sbuf(), proto(), pk(), hardwareSerial() {
     reset(deviceId);
 }
 
 void CryptoUbirchProtocol::reset(const uint32_t deviceId) {
-    unsigned char hardwareSerial[UBIRCH_PROTOCOL_UUID_SIZE] = {};
     memcpy(hardwareSerial + sizeof(hardwareSerial) - sizeof(deviceId), &deviceId, 4);
 
     // initialize ubirch protocol
@@ -125,6 +125,26 @@ CryptoUbirchProtocol &CryptoUbirchProtocol::addMsgPack(char *buf, size_t len) {
     return *this;
 }
 
+PacketBuffer  CryptoUbirchProtocol::createKeyRegistration(unsigned char *key, unsigned int notBefore, unsigned int notAfter) {
+    // initialize ubirch protocol
+    memset(&proto, 0, sizeof(proto));
+    ubirch_protocol_init(&proto, proto_signed, UBIRCH_PROTOCOL_TYPE_REG,
+                         &sbuf, msgpack_write_dal, ed25519_sign, hardwareSerial);
+    startMessage();
+
+    ubirch_key_info info = {};
+    info.algorithm = const_cast<char *>(UBIRCH_KEX_ALG_ECC_ED25519);
+    info.created = notBefore;
+    memcpy(info.hwDeviceId, hardwareSerial, sizeof(info.hwDeviceId));
+    memcpy(info.pubKey, key, crypto_sign_PUBLICKEYBYTES);
+    info.validNotAfter = notAfter;
+    info.validNotBefore = notBefore;
+    msgpack_pack_key_register(&pk, &info);
+
+    return finishMessage();
+}
+
+
 int CryptoUbirchProtocol::msgpack_write_dal(void *data, const char *buf, size_t len) {
     msgpack_sbuffer *sbuf = (msgpack_sbuffer *) data;
 
@@ -143,6 +163,7 @@ int CryptoUbirchProtocol::msgpack_write_dal(void *data, const char *buf, size_t 
 
     return 0;
 }
+
 
 
 
