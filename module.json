@@ -10,7 +10,6 @@
   "targetDependencies": {},
   "extraIncludes": [
     "source"
-  ],
-  "bin": "./source"
+  ]
 }
 

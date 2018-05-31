@@ -3,8 +3,6 @@
 This wraps the [ubirch-protocol](https://github.com/ubirch/ubirch-protocol) to be used with the 
 [microbit-dal](https://github.com/calliope-mini/microbit-dal).
 
-> Right now the lib will package all data as raw bytes into the payload.
-
 ## Example
 
 See [example/main.cpp](example/main.cpp) for a working example:
